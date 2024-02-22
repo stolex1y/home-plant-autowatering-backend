@@ -1,0 +1,26 @@
+logging:
+  level:
+    org.springframework.web: debug
+    ru.filimonov: debug
+    org.hibernate: warn
+  file:
+    name: logs/app.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    default-schema: public
+app:
+  datasource:
+    jdbc-url: ${HPA_PROD_JDBC_URL}
+    username: ${HPA_PROD_USERNAME}
+    password: ${HPA_PROD_PASS}
