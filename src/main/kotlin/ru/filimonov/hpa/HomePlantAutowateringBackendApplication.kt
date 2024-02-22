@@ -4,7 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class HomePlantAutowateringBackendApplication
+class HomePlantAutowateringBackendApplication {
+}
 
 fun main(args: Array<String>) {
     runApplication<HomePlantAutowateringBackendApplication>(*args)
