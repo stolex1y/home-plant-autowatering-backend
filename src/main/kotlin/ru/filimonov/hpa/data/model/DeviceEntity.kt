@@ -1,6 +1,7 @@
 package ru.filimonov.hpa.data.model
 
 import jakarta.persistence.*
+import ru.filimonov.hpa.domain.model.Device
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
@@ -17,4 +18,22 @@ data class DeviceEntity(
     @GeneratedValue
     @Id
     val uuid: UUID = UUID.randomUUID()
-)
+) {
+    companion object {
+        fun Device.toEntity() = DeviceEntity(
+            userId = userId,
+            mac = mac,
+            plantId = plantId,
+            createdDate = createdDate,
+            uuid = uuid
+        )
+    }
+
+    fun toDomain() = Device(
+        userId = userId,
+        mac = mac,
+        plantId = plantId,
+        createdDate = createdDate,
+        uuid = uuid
+    )
+}
