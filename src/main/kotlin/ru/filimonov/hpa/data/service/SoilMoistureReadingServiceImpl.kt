@@ -9,7 +9,6 @@ import ru.filimonov.hpa.core.floorToHour
 import ru.filimonov.hpa.core.toTimestamp
 import ru.filimonov.hpa.data.model.SoilMoistureReadingEntity
 import ru.filimonov.hpa.data.repository.SoilMoistureReadingRepository
-import ru.filimonov.hpa.data.toSensorReading
 import ru.filimonov.hpa.domain.model.SensorReading
 import ru.filimonov.hpa.domain.service.SoilMoistureReadingService
 import java.util.*
@@ -20,7 +19,7 @@ class SoilMoistureReadingServiceImpl @Autowired constructor(
 ) : SoilMoistureReadingService {
     override fun getLastValue(deviceId: UUID): SensorReading<Float>? {
         val entity = repository.findTopByDeviceIdOrderByTimestampDesc(deviceId) ?: return null
-        return entity.toSensorReading()
+        return entity.toDomain()
     }
 
     override fun getReadingsForPeriodByHour(deviceId: UUID, period: Range<Calendar>): List<SensorReading<Float>> {
@@ -46,7 +45,7 @@ class SoilMoistureReadingServiceImpl @Autowired constructor(
                 reading = reading,
                 deviceId = deviceId
             )
-        ).toSensorReading()
+        ).toDomain()
     }
 
     private fun getReadingsForPeriodRounded(
@@ -59,7 +58,7 @@ class SoilMoistureReadingServiceImpl @Autowired constructor(
             deviceId,
             periodBounds.first.toTimestamp(),
             periodBounds.second.toTimestamp()
-        ).map(SoilMoistureReadingEntity::toSensorReading)
+        ).map(SoilMoistureReadingEntity::toDomain)
             .onEach { it.timestamp.round() }
             .groupBy { it.timestamp }
             .mapValues { groupEntry ->

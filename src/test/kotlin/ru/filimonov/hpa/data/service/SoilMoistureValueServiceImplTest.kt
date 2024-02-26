@@ -9,7 +9,6 @@ import org.springframework.test.context.jdbc.Sql
 import ru.filimonov.hpa.core.toCalendar
 import ru.filimonov.hpa.data.repository.DeviceRepository
 import ru.filimonov.hpa.data.repository.SoilMoistureReadingRepository
-import ru.filimonov.hpa.data.toSensorReading
 import ru.filimonov.hpa.domain.model.SensorReading
 import ru.filimonov.hpa.domain.service.SoilMoistureReadingService
 import java.util.*
@@ -36,7 +35,7 @@ class SoilMoistureValueServiceImplTest @Autowired constructor(
     @Test
     fun `get last sensor reading test`() {
         val expectedSensorReading =
-            soilMoistureReadingRepository.findTopByDeviceIdOrderByTimestampDesc(deviceId)?.toSensorReading()
+            soilMoistureReadingRepository.findTopByDeviceIdOrderByTimestampDesc(deviceId)?.toDomain()
         val actualSensorReading = underTest.getLastValue(deviceId)
         assertEquals(expectedSensorReading, actualSensorReading)
     }
@@ -50,7 +49,7 @@ class SoilMoistureValueServiceImplTest @Autowired constructor(
 
         underTest.addReading(deviceId, expectedSensorReading.reading)
         val actualSensorReading =
-            soilMoistureReadingRepository.findTopByDeviceIdOrderByTimestampDesc(deviceId)?.toSensorReading()
+            soilMoistureReadingRepository.findTopByDeviceIdOrderByTimestampDesc(deviceId)?.toDomain()
                 ?: throw AssertionError("Last reading mustn't be null after adding.")
 
         assertEquals(expectedSensorReading.reading, actualSensorReading.reading)
@@ -76,5 +75,15 @@ class SoilMoistureValueServiceImplTest @Autowired constructor(
 
         assertEquals(expectedDeleted.size.toLong(), deletedReadingCount)
         assertEquals(0, afterDeletion.filter { it.timestamp in leftBound..rightBound }.size)
+    }
+
+    @Test
+    fun `get readings for period by day test`() {
+        TODO("тест получения усредненных данных по дням")
+    }
+
+    @Test
+    fun `get readings for period by hour test`() {
+        TODO("тест получения усредненных данных по часам")
     }
 }
