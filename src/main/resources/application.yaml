@@ -19,8 +19,13 @@ spring:
       ddl-auto: validate
   flyway:
     default-schema: public
+
 app:
   datasource:
     jdbc-url: ${HPA_PROD_JDBC_URL}
     username: ${HPA_PROD_USERNAME}
     password: ${HPA_PROD_PASS}
+  mqtt:
+    url: ${HPA_MQTT_URL}
+    username: ${HPA_MQTT_USERNAME}
+    password: ${HPA_MQTT_PASSWORD}

@@ -29,14 +29,14 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.modelmapper:modelmapper:3.1.1")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
+    implementation("org.springframework.integration:spring-integration-mqtt:6.2.2")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     runtimeOnly("org.flywaydb:flyway-database-postgresql:$flywayVersion")
     runtimeOnly("org.postgresql:postgresql")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude("junit", "junit")
     }
-    testRuntimeOnly("org.flywaydb:flyway-database-postgresql:$flywayVersion")
-    testRuntimeOnly("org.postgresql:postgresql")
 }
 
 java {
