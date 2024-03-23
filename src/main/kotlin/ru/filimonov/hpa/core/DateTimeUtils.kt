@@ -3,7 +3,6 @@ package ru.filimonov.hpa.core
 import org.springframework.data.domain.Range
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 fun Timestamp.toCalendar(): Calendar {
