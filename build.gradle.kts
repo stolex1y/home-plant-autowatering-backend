@@ -14,6 +14,7 @@ version = "0.0.1-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    maven(url = "https://jitpack.io")
 }
 
 dependencies {
@@ -55,7 +56,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude("junit", "junit")
     }
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.3.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation("org.flywaydb:flyway-core:$flywayVersion")
+    testRuntimeOnly("org.flywaydb:flyway-database-postgresql:$flywayVersion")
+    testRuntimeOnly("org.postgresql:postgresql")
 }
 
 java {

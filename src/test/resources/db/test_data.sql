@@ -1,3 +1,8 @@
+create or replace function now_utc() returns timestamp as
+'
+    select now() at time zone ''utc'';
+' language sql;
+
 -- Рандомное число int от min до max
 CREATE OR REPLACE FUNCTION gen_random_int(min integer = 0, max integer = 100) RETURNS integer AS
 '
@@ -14,7 +19,7 @@ create or replace function gen_random_mac() returns text as
 create or replace function gen_test_devices(device_count integer = 20, user_count integer = 10) returns void as
 '
     declare
-        user_id         record;
+        user_id record;
     begin
         if (user_count = 0) then
             return;
@@ -29,7 +34,7 @@ create or replace function gen_test_devices(device_count integer = 20, user_coun
                                gen_random_mac()  mac,
                                null              plant,
                                user_id           user_id,
-                               now()             created_date;
+                               now_utc()             created_date;
                     end loop;
             end loop;
     end;
@@ -49,7 +54,7 @@ create or replace function gen_test_sensor_readings(reading_count integer = 1000
         if (device_count = 0) then
             return;
         end if;
-        start_time = now();
+        start_time = now_utc();
         for device in
             select *
             from devices
@@ -81,7 +86,8 @@ create or replace function gen_test_sensor_readings(reading_count integer = 1000
                                cur_time                  timestamp,
                                device.uuid               device;
 
-                        insert into soil_moisture_readings
+                        insert
+                        into soil_moisture_readings
                         select gen_random_uuid()       uuid,
                                gen_random_int(70, 100) value,
                                cur_time                timestamp,
@@ -100,7 +106,7 @@ create or replace function gen_test_sensor_readings(reading_count integer = 1000
 ' language plpgsql;
 
 create or replace function gen_test_data(reading_count integer = 100, user_count integer = 1,
-                                                    device_count integer = 1) returns void as
+                                         device_count integer = 1) returns void as
 '
     select gen_test_devices(device_count);
     select gen_test_sensor_readings(reading_count);

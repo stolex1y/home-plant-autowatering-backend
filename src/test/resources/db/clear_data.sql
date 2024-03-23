@@ -1,1 +1,1 @@
-delete from users cascade;
+delete from devices cascade;

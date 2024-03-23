@@ -5,15 +5,13 @@ spring:
       ddl-auto: validate
   flyway:
     default-schema: public
-    url: ${HPA_TEST_JDBC_URL}
-    user: ${HPA_TEST_USERNAME}
-    password: ${HPA_TEST_PASS}
   main:
     allow-bean-definition-overriding: true
     banner-mode: off
   datasource:
     driver-class-name: org.postgresql.Driver
     jdbc-url: ${HPA_TEST_JDBC_URL}
+    url: ${HPA_TEST_JDBC_URL}
     username: ${HPA_TEST_USERNAME}
     password: ${HPA_TEST_PASS}
   test:
@@ -21,6 +19,9 @@ spring:
       replace: none
 
 app:
+  location:
+    time-zone: "UTC"
+    locale: "en-US"
   mqtt:
     url: ${HPA_MQTT_URL}
     username: ${HPA_MQTT_USERNAME}
