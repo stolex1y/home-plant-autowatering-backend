@@ -16,7 +16,7 @@ interface SoilMoistureReadingRepository : CrudRepository<SoilMoistureReadingEnti
 
     fun findTopByDeviceIdOrderByTimestampDesc(deviceId: UUID): SoilMoistureReadingEntity?
 
-    fun findAllByDeviceIdAndTimestampBetweenOrderByTimestampDesc(
+    fun findAllByDeviceIdAndTimestampBetweenOrderByTimestampAsc(
         deviceId: UUID,
         timestampBegin: Timestamp,
         timestampEnd: Timestamp

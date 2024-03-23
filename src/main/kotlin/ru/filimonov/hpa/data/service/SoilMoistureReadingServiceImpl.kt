@@ -1,5 +1,6 @@
 package ru.filimonov.hpa.data.service
 
+import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Range
 import org.springframework.stereotype.Service
@@ -9,28 +10,41 @@ import ru.filimonov.hpa.core.floorToHour
 import ru.filimonov.hpa.core.toTimestamp
 import ru.filimonov.hpa.data.model.SoilMoistureReadingEntity
 import ru.filimonov.hpa.data.repository.SoilMoistureReadingRepository
+import ru.filimonov.hpa.domain.model.PeriodUnit
 import ru.filimonov.hpa.domain.model.SensorReading
-import ru.filimonov.hpa.domain.service.SoilMoistureReadingService
+import ru.filimonov.hpa.domain.service.DeviceService
+import ru.filimonov.hpa.domain.service.sensors.SoilMoistureReadingService
 import java.util.*
 
 @Service
 class SoilMoistureReadingServiceImpl @Autowired constructor(
+    private val deviceService: DeviceService,
     private val repository: SoilMoistureReadingRepository,
 ) : SoilMoistureReadingService {
-    override fun getLastValue(deviceId: UUID): SensorReading<Float>? {
+
+    private val log = LogFactory.getLog(javaClass)
+
+    override fun getLastReading(userId: String, deviceId: UUID): SensorReading<Float>? {
+        checkUserHasDevice(userId = userId, deviceId = deviceId)
         val entity = repository.findTopByDeviceIdOrderByTimestampDesc(deviceId) ?: return null
         return entity.toDomain()
     }
 
-    override fun getReadingsForPeriodByHour(deviceId: UUID, period: Range<Calendar>): List<SensorReading<Float>> {
-        return getReadingsForPeriodRounded(deviceId, period) { floorToHour() }
+    override fun getReadingsForPeriodByTimeUnit(
+        userId: String,
+        deviceId: UUID,
+        period: Range<Calendar>,
+        periodUnit: PeriodUnit,
+    ): List<SensorReading<Float>> {
+        checkUserHasDevice(userId = userId, deviceId = deviceId)
+        return when (periodUnit) {
+            PeriodUnit.DAY -> getReadingsForPeriodRounded(deviceId, period) { floorToDay() }
+            PeriodUnit.HOUR -> getReadingsForPeriodRounded(deviceId, period) { floorToHour() }
+        }
     }
 
-    override fun getReadingsForPeriodByDay(deviceId: UUID, period: Range<Calendar>): List<SensorReading<Float>> {
-        return getReadingsForPeriodRounded(deviceId, period) { floorToDay() }
-    }
-
-    override fun deleteReadingsForPeriod(deviceId: UUID, period: Range<Calendar>): Long {
+    override fun deleteReadingsForPeriod(userId: String, deviceId: UUID, period: Range<Calendar>): Long {
+        checkUserHasDevice(userId = userId, deviceId = deviceId)
         val periodBounds = period.bounds()
         return repository.deleteAllByDeviceIdAndTimestampBetween(
             deviceId,
@@ -39,7 +53,8 @@ class SoilMoistureReadingServiceImpl @Autowired constructor(
         )
     }
 
-    override fun addReading(deviceId: UUID, reading: Float): SensorReading<Float> {
+    override fun addReading(userId: String, deviceId: UUID, reading: Float): SensorReading<Float> {
+        checkUserHasDevice(userId = userId, deviceId = deviceId)
         return repository.save(
             SoilMoistureReadingEntity(
                 reading = reading,
@@ -48,13 +63,20 @@ class SoilMoistureReadingServiceImpl @Autowired constructor(
         ).toDomain()
     }
 
+    private fun checkUserHasDevice(userId: String, deviceId: UUID) {
+        if (!deviceService.isUserDevice(userId = userId, deviceId = deviceId)) {
+            log.info("user with id=$userId tried to read device data with id=$deviceId")
+            throw IllegalAccessException()
+        }
+    }
+
     private fun getReadingsForPeriodRounded(
         deviceId: UUID,
         period: Range<Calendar>,
         round: Calendar.() -> Unit
     ): List<SensorReading<Float>> {
         val periodBounds = period.bounds()
-        return repository.findAllByDeviceIdAndTimestampBetweenOrderByTimestampDesc(
+        return repository.findAllByDeviceIdAndTimestampBetweenOrderByTimestampAsc(
             deviceId,
             periodBounds.first.toTimestamp(),
             periodBounds.second.toTimestamp()
