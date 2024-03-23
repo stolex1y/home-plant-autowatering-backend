@@ -1,4 +1,4 @@
-package ru.filimonov.hpa.domain.service
+package ru.filimonov.hpa.domain.mqtt
 
 import java.util.*
 

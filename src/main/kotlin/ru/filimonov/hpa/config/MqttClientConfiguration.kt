@@ -24,7 +24,7 @@ import org.springframework.messaging.MessageChannel
 import org.springframework.stereotype.Component
 import ru.filimonov.hpa.data.repository.MqttOutboundRepository
 import ru.filimonov.hpa.domain.service.DeviceService
-import ru.filimonov.hpa.domain.service.MqttMessageHandler
+import ru.filimonov.hpa.domain.mqtt.MqttMessageHandler
 import java.util.*
 
 
@@ -82,7 +82,6 @@ class MqttClientConfiguration {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     @Bean
-    @ConfigurationProperties(prefix = MQTT_CONN_PROPS_PREFIX)
     fun mqttClientFactory(connectionProperties: ConnectionProperties): MqttPahoClientFactory {
         return DefaultMqttPahoClientFactory().apply {
             connectionOptions.apply {
