@@ -10,7 +10,7 @@ import java.util.*
 @Table(name = "devices")
 data class DeviceEntity(
     @Column(name = "user_id")
-    val userId: UUID,
+    val userId: String,
     val mac: String,
     @Column(name = "plant")
     val plantId: UUID? = null,

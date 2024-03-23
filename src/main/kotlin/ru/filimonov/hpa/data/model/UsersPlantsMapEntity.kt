@@ -10,7 +10,7 @@ import java.util.*
 data class UsersPlantsMapEntity(
     @Id
     @Column(name = "user_id")
-    val user: UUID,
+    val user: String,
     @Id
     val plant: UUID
 ) : Serializable
