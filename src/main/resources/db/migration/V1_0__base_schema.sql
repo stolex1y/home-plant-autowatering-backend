@@ -1,9 +1,3 @@
-CREATE TABLE "users"
-(
-    "uuid"         uuid PRIMARY KEY,
-    "created_date" timestamp NOT NULL DEFAULT (now())
-);
-
 CREATE TABLE "plants"
 (
     "uuid"              uuid PRIMARY KEY,
@@ -21,7 +15,7 @@ CREATE TABLE "plants"
 
 CREATE TABLE "users_plants"
 (
-    "user_id" uuid NOT NULL,
+    "user_id" text NOT NULL,
     "plant"   uuid NOT NULL,
     PRIMARY KEY ("user_id", "plant")
 );
@@ -31,7 +25,7 @@ CREATE TABLE "devices"
     "uuid"         uuid PRIMARY KEY,
     "mac"          varchar(17) NOT NULL,
     "plant"        uuid,
-    "user_id"      uuid        NOT NULL,
+    "user_id"      text        NOT NULL,
     "created_date" timestamp   NOT NULL DEFAULT (now())
 );
 
@@ -98,16 +92,10 @@ CREATE INDEX ON "soil_moisture_readings" ("timestamp");
 CREATE INDEX ON "water_reserve_readings" ("timestamp");
 
 ALTER TABLE "users_plants"
-    ADD FOREIGN KEY ("user_id") REFERENCES "users" ("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE "users_plants"
     ADD FOREIGN KEY ("plant") REFERENCES "plants" ("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "devices"
     ADD FOREIGN KEY ("plant") REFERENCES "plants" ("uuid") ON DELETE SET NULL ON UPDATE CASCADE;
-
-ALTER TABLE "devices"
-    ADD FOREIGN KEY ("user_id") REFERENCES "users" ("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "air_humidity_readings"
     ADD FOREIGN KEY ("device") REFERENCES "devices" ("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
