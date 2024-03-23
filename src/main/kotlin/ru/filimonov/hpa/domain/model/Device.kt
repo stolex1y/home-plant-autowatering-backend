@@ -5,7 +5,7 @@ import java.time.Instant
 import java.util.*
 
 data class Device(
-    val userId: UUID,
+    val userId: String,
     val mac: String,
     val plantId: UUID? = null,
     val createdDate: Timestamp = Timestamp.from(Instant.now()),
