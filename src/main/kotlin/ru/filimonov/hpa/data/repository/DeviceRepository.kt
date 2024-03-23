@@ -6,4 +6,6 @@ import java.util.*
 
 interface DeviceRepository : CrudRepository<DeviceEntity, UUID> {
     fun findByMac(mac: String): DeviceEntity?
+    fun findAllByUserId(userId: String): List<DeviceEntity>
+    fun existsByUserIdAndUuid(userId: String, deviceId: UUID): Boolean
 }
