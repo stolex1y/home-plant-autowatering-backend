@@ -22,10 +22,10 @@ import org.springframework.integration.mqtt.support.MqttHeaders
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
 import org.springframework.stereotype.Component
+import org.springframework.validation.annotation.Validated
 import ru.filimonov.hpa.data.repository.DeviceRepository
 import ru.filimonov.hpa.data.repository.MqttOutboundRepository
 import ru.filimonov.hpa.domain.mqtt.MqttMessageHandler
-import ru.filimonov.hpa.domain.service.DeviceService
 import java.util.*
 
 
@@ -47,6 +47,7 @@ class MqttClientConfiguration {
     }
 
     @ConfigurationProperties(prefix = MQTT_CONN_PROPS_PREFIX)
+    @Validated
     class ConnectionProperties @ConstructorBinding constructor(
         @NotBlank
         val url: String,

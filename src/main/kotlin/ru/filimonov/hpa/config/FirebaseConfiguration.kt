@@ -12,6 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.context.properties.bind.ConstructorBinding
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.validation.annotation.Validated
 import java.io.ByteArrayInputStream
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
@@ -24,6 +25,7 @@ private const val FIREBASE_PROPS = "app.firebase"
 class FirebaseConfiguration {
 
     @ConfigurationProperties(prefix = FIREBASE_PROPS)
+    @Validated
     class FirebaseProperties @ConstructorBinding constructor(
         @NotBlank
         val privateKey: String

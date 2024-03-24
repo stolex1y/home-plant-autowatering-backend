@@ -28,3 +28,4 @@ app:
     password: ${HPA_MQTT_PASSWORD}
   firebase:
     private-key: ${HPA_FIREBASE_KEY}
+    api-key: ${HPA_API_KEY}

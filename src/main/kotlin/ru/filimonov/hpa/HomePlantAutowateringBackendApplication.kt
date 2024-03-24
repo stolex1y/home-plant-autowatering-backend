@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.context.properties.bind.ConstructorBinding
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
+import org.springframework.validation.annotation.Validated
 import java.util.*
 
 private const val LOCATION_PROPS = "app.location"
@@ -17,6 +18,7 @@ private const val LOCATION_PROPS = "app.location"
 class HomePlantAutowateringBackendApplication {
 
     @ConfigurationProperties(prefix = LOCATION_PROPS)
+    @Validated
     class LocationProperties @ConstructorBinding constructor(
         @NotBlank
         val timeZone: String,
