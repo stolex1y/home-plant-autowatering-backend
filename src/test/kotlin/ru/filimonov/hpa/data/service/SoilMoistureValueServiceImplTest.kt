@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -110,22 +111,26 @@ class SoilMoistureValueServiceImplTest @Autowired constructor(
 
     @Test
     fun `try to get last reading from not user's device`() {
+        val randomDeviceUUID = UUID.randomUUID()
         assertThrows(IllegalAccessException::class.java) {
-            underTest.getLastReading(userId, UUID.randomUUID())
+            underTest.getLastReading(userId, randomDeviceUUID)
         }
+        verify(deviceService).isUserDevice(userId, randomDeviceUUID)
     }
 
     @Test
     fun `try to get readings for period from not user's device`() {
         PeriodUnit.entries.forEach { periodUnit ->
+            val randomDeviceUUID = UUID.randomUUID()
             assertThrows(IllegalAccessException::class.java) {
                 underTest.getReadingsForPeriodByTimeUnit(
                     userId,
-                    UUID.randomUUID(),
+                    randomDeviceUUID,
                     Range.closed(CALENDAR_MIN, CALENDAR_MAX),
                     periodUnit
                 )
             }
+            verify(deviceService).isUserDevice(userId, randomDeviceUUID)
         }
     }
 
