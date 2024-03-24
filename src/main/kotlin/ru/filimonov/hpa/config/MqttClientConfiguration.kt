@@ -23,8 +23,8 @@ import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
 import org.springframework.stereotype.Component
 import ru.filimonov.hpa.data.repository.MqttOutboundRepository
-import ru.filimonov.hpa.domain.service.DeviceService
 import ru.filimonov.hpa.domain.mqtt.MqttMessageHandler
+import ru.filimonov.hpa.domain.service.DeviceService
 import java.util.*
 
 
@@ -60,13 +60,13 @@ class MqttClientConfiguration {
             private val TOPIC_REGEX = "$DEVICE_SENSOR_BASE_TOPIC/(.+)/(.+)".toRegex()
         }
 
-        val deviceMac: String
+        val deviceId: UUID
         val sensorType: String
 
         init {
             val matchResult = TOPIC_REGEX.find(fullName)
                 ?: throw IllegalArgumentException("Topic ($fullName) isn't valid.")
-            deviceMac = matchResult.groupValues[1]
+            deviceId = matchResult.groupValues[1].run(UUID::fromString)
             sensorType = matchResult.groupValues[2]
         }
     }
@@ -132,21 +132,25 @@ class MqttClientConfiguration {
                 val topicFullName = message.topic()
                 runCatching<Boolean> {
                     val topic = Topic(topicFullName)
-                    val deviceId = deviceService.getDeviceByMac(topic.deviceMac)?.uuid
-                        ?: throw IllegalArgumentException("Couldn't find device id.")
-                    val handlers = topicHandlers[topic.sensorType]
-                    handlers?.forEach {
+                    if (!deviceService.isDeviceExists(topic.deviceId)) {
+                        throw IllegalArgumentException("Couldn't find device by id: ${topic.deviceId}")
+                    }
+                    val handlers: List<MqttMessageHandler>? = topicHandlers[topic.sensorType]
+                    if (handlers.isNullOrEmpty()) {
+                        return@runCatching false
+                    }
+                    handlers.forEach {
                         it.handle(
-                            deviceId, message.payload.toString()
+                            topic.deviceId, message.payload.toString()
                         )
                     }
-                    return@runCatching handlers?.isNotEmpty() == true
+                    return@runCatching true
                 }.onSuccess { handled ->
                     if (handled) {
                         mqttOutboundRepository.sendMessage(topicFullName, "", 2, true)
                     }
                 }.onFailure {
-                    logger.error("Invalid mqtt message by topic ($topicFullName): ${it.message}")
+                    logger.error("Invalid mqtt message by topic ($topicFullName): ${it.message}.", it)
                     mqttOutboundRepository.sendMessage(topicFullName, "", 2, true)
                 }
             }.get()

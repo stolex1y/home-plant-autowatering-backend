@@ -1,6 +1,8 @@
 package ru.filimonov.hpa.data.model
 
 import jakarta.persistence.*
+import ru.filimonov.hpa.core.toCalendar
+import ru.filimonov.hpa.core.toTimestamp
 import ru.filimonov.hpa.domain.model.Device
 import java.sql.Timestamp
 import java.time.Instant
@@ -24,7 +26,7 @@ data class DeviceEntity(
             userId = userId,
             mac = mac,
             plantId = plantId,
-            createdDate = createdDate,
+            createdDate = createdDate.toTimestamp(),
             uuid = uuid
         )
     }
@@ -33,7 +35,7 @@ data class DeviceEntity(
         userId = userId,
         mac = mac,
         plantId = plantId,
-        createdDate = createdDate,
+        createdDate = createdDate.toCalendar(),
         uuid = uuid
     )
 }
