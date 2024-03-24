@@ -1,5 +1,6 @@
 package ru.filimonov.hpa.domain.model
 
+import jakarta.validation.constraints.PastOrPresent
 import ru.filimonov.hpa.core.toCalendar
 import ru.filimonov.hpa.core.toDateTimeString
 import java.sql.Timestamp
@@ -7,6 +8,7 @@ import java.util.*
 
 data class SensorReading<ReadingType>(
     val reading: ReadingType,
+    @PastOrPresent
     val timestamp: Calendar
 ) {
     constructor(

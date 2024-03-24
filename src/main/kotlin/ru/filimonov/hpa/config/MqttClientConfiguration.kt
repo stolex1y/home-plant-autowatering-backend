@@ -22,6 +22,7 @@ import org.springframework.integration.mqtt.support.MqttHeaders
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
 import org.springframework.stereotype.Component
+import ru.filimonov.hpa.data.repository.DeviceRepository
 import ru.filimonov.hpa.data.repository.MqttOutboundRepository
 import ru.filimonov.hpa.domain.mqtt.MqttMessageHandler
 import ru.filimonov.hpa.domain.service.DeviceService
@@ -119,7 +120,7 @@ class MqttClientConfiguration {
     fun mqttInbound(
         mqttAdapter: MqttPahoMessageDrivenChannelAdapter,
         mqttHandlers: List<MqttMessageHandler>,
-        deviceService: DeviceService,
+        deviceRepository: DeviceRepository,
         mqttOutboundRepository: MqttOutboundRepository
     ): IntegrationFlow {
         val topicHandlers = mutableMapOf<String, MutableList<MqttMessageHandler>>()
@@ -132,7 +133,7 @@ class MqttClientConfiguration {
                 val topicFullName = message.topic()
                 runCatching<Boolean> {
                     val topic = Topic(topicFullName)
-                    if (!deviceService.isDeviceExists(topic.deviceId)) {
+                    if (!deviceRepository.existsById(topic.deviceId)) {
                         throw IllegalArgumentException("Couldn't find device by id: ${topic.deviceId}")
                     }
                     val handlers: List<MqttMessageHandler>? = topicHandlers[topic.sensorType]

@@ -4,6 +4,7 @@ import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Range
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
 import ru.filimonov.hpa.core.bounds
 import ru.filimonov.hpa.core.floorToDay
 import ru.filimonov.hpa.core.floorToHour
@@ -17,6 +18,7 @@ import ru.filimonov.hpa.domain.service.sensors.SoilMoistureReadingService
 import java.util.*
 
 @Service
+@Validated
 class SoilMoistureReadingServiceImpl @Autowired constructor(
     private val deviceService: DeviceService,
     private val repository: SoilMoistureReadingRepository,
@@ -53,7 +55,11 @@ class SoilMoistureReadingServiceImpl @Autowired constructor(
         )
     }
 
-    override fun addReading(userId: String, deviceId: UUID, reading: Float): SensorReading<Float> {
+    override fun addReading(
+        userId: String,
+        deviceId: UUID,
+        reading: Float
+    ): SensorReading<Float> {
         checkUserHasDevice(userId = userId, deviceId = deviceId)
         return repository.save(
             SoilMoistureReadingEntity(

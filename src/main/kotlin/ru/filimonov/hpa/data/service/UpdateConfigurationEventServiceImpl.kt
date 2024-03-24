@@ -15,6 +15,7 @@ class UpdateConfigurationEventServiceImpl(
     }
 
     override fun sendUpdateConfigEvent(device: Device, configuration: Configuration) {
+        //TODO(валидация)
         mqttEventRepository.sendEvent(TOPIC, device.mac, configuration.toString())
     }
 }
