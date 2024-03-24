@@ -1,6 +1,5 @@
 package ru.filimonov.hpa.rest.device
 
-import jakarta.validation.Valid
 import org.apache.commons.logging.LogFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -33,7 +32,7 @@ class DeviceController(
     @PostMapping
     fun addDevice(
         @AuthenticationPrincipal user: User,
-        @Valid @RequestBody device: DeviceRequest,
+        @RequestBody device: DeviceRequest,
     ): ResponseEntity<DeviceResponse> {
         val createdDevice = deviceService.addDevice(device.toDomain(user.id)).toResponse()
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -53,7 +52,7 @@ class DeviceController(
     fun updateDevice(
         @AuthenticationPrincipal user: User,
         @PathVariable deviceId: UUID,
-        @Valid @RequestBody deviceUpdate: UpdateDeviceRequest,
+        @RequestBody deviceUpdate: UpdateDeviceRequest,
     ): ResponseEntity<DeviceResponse> {
         val beforeUpdate = deviceService.getDeviceById(userId = user.id, deviceId = deviceId)
         val afterUpdate = deviceUpdate.applyUpdates(beforeUpdate)
