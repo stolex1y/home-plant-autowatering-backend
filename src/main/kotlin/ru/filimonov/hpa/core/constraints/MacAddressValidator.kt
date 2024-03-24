@@ -1,4 +1,4 @@
-package ru.filimonov.hpa.rest.common.constraints
+package ru.filimonov.hpa.core.constraints
 
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext

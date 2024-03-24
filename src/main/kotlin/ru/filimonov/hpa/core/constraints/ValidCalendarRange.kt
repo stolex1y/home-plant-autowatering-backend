@@ -4,14 +4,14 @@ import jakarta.validation.Constraint
 import jakarta.validation.Payload
 import kotlin.reflect.KClass
 
-@Target(AnnotationTarget.FIELD)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @Constraint(
-    validatedBy = [MacAddressValidator::class]
+    validatedBy = [CalendarRangeValidator::class]
 )
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-annotation class MacAddress(
-    val message: String = "Does not match the format of the MAC address",
+annotation class ValidCalendarRange(
+    val message: String = "Invalid range of values",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = [],
 ) {
