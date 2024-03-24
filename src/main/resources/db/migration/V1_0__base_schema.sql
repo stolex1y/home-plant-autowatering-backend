@@ -79,6 +79,8 @@ CREATE TABLE "water_reserve_readings"
 
 CREATE UNIQUE INDEX ON "devices" ("plant");
 
+CREATE UNIQUE INDEX ON "devices" ("mac");
+
 CREATE INDEX ON "air_humidity_readings" ("timestamp");
 
 CREATE INDEX ON "air_temp_readings" ("timestamp");
