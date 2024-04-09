@@ -1,7 +1,9 @@
 package ru.filimonov.hpa.data.model
 
 import jakarta.persistence.*
-import ru.filimonov.hpa.domain.model.SensorReading
+import ru.filimonov.hpa.core.toCalendar
+import ru.filimonov.hpa.core.toTimestamp
+import ru.filimonov.hpa.domain.model.SoilMoistureReading
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
@@ -17,7 +19,21 @@ data class SoilMoistureReadingEntity(
     @Id
     val uuid: UUID = UUID.randomUUID()
 ) {
-    fun toDomain(): SensorReading<Float> {
-        return SensorReading(reading = reading, timestamp = timestamp)
+    companion object {
+        fun SoilMoistureReading.toEntity() = SoilMoistureReadingEntity(
+            reading = reading,
+            deviceId = deviceId,
+            timestamp = timestamp.toTimestamp(),
+            uuid = uuid,
+        )
+    }
+
+    fun toDomain(): SoilMoistureReading {
+        return SoilMoistureReading(
+            uuid = uuid,
+            deviceId = deviceId,
+            reading = reading,
+            timestamp = timestamp.toCalendar(),
+        )
     }
 }

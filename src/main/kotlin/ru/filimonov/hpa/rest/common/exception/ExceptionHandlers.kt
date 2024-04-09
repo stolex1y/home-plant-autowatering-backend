@@ -7,10 +7,12 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.stereotype.Component
+import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import org.springframework.web.multipart.support.MissingServletRequestPartException
 import org.springframework.web.servlet.resource.NoResourceFoundException
 import ru.filimonov.hpa.domain.exceptions.DomainValidationErrorException
 
@@ -101,6 +103,22 @@ class ExceptionHandlers {
         return ExceptionHandlerResponse(
             message = "Resource not found",
             status = HttpStatus.NOT_FOUND
+        ).toResponseEntity()
+    }
+
+    @ExceptionHandler
+    fun handleException(ex: HttpRequestMethodNotSupportedException): ResponseEntity<ExceptionHandlerResponse> {
+        return ExceptionHandlerResponse(
+            message = ex.message ?: "Method not supported",
+            status = HttpStatus.BAD_REQUEST
+        ).toResponseEntity()
+    }
+
+    @ExceptionHandler
+    fun handleException(ex: MissingServletRequestPartException): ResponseEntity<ExceptionHandlerResponse> {
+        return ExceptionHandlerResponse(
+            message = ex.message ?: "Missing request part",
+            status = HttpStatus.BAD_REQUEST
         ).toResponseEntity()
     }
 

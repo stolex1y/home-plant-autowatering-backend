@@ -4,15 +4,18 @@ import org.apache.commons.logging.LogFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Range
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
 import ru.filimonov.hpa.core.bounds
 import ru.filimonov.hpa.core.floorToDay
 import ru.filimonov.hpa.core.floorToHour
 import ru.filimonov.hpa.core.toTimestamp
 import ru.filimonov.hpa.data.model.SoilMoistureReadingEntity
+import ru.filimonov.hpa.data.model.SoilMoistureReadingEntity.Companion.toEntity
 import ru.filimonov.hpa.data.repository.SoilMoistureReadingRepository
 import ru.filimonov.hpa.domain.model.PeriodUnit
 import ru.filimonov.hpa.domain.model.SensorReading
+import ru.filimonov.hpa.domain.model.SoilMoistureReading
 import ru.filimonov.hpa.domain.service.DeviceService
 import ru.filimonov.hpa.domain.service.sensors.SoilMoistureReadingService
 import java.util.*
@@ -26,12 +29,14 @@ class SoilMoistureReadingServiceImpl @Autowired constructor(
 
     private val log = LogFactory.getLog(javaClass)
 
+    @Transactional(readOnly = true)
     override fun getLastReading(userId: String, deviceId: UUID): SensorReading<Float>? {
         checkUserHasDevice(userId = userId, deviceId = deviceId)
         val entity = repository.findTopByDeviceIdOrderByTimestampDesc(deviceId) ?: return null
         return entity.toDomain()
     }
 
+    @Transactional(readOnly = true)
     override fun getReadingsForPeriodByTimeUnit(
         userId: String,
         deviceId: UUID,
@@ -45,6 +50,7 @@ class SoilMoistureReadingServiceImpl @Autowired constructor(
         }
     }
 
+    @Transactional
     override fun deleteReadingsForPeriod(userId: String, deviceId: UUID, period: Range<Calendar>): Long {
         checkUserHasDevice(userId = userId, deviceId = deviceId)
         val periodBounds = period.bounds()
@@ -55,18 +61,13 @@ class SoilMoistureReadingServiceImpl @Autowired constructor(
         )
     }
 
+    @Transactional
     override fun addReading(
         userId: String,
-        deviceId: UUID,
-        reading: Float
-    ): SensorReading<Float> {
-        checkUserHasDevice(userId = userId, deviceId = deviceId)
-        return repository.save(
-            SoilMoistureReadingEntity(
-                reading = reading,
-                deviceId = deviceId
-            )
-        ).toDomain()
+        soilMoistureReading: SoilMoistureReading,
+    ): SoilMoistureReading {
+        checkUserHasDevice(userId = userId, deviceId = soilMoistureReading.deviceId)
+        return repository.save(soilMoistureReading.toEntity()).toDomain()
     }
 
     private fun checkUserHasDevice(userId: String, deviceId: UUID) {

@@ -3,7 +3,7 @@ package ru.filimonov.hpa.rest.device.model
 import ru.filimonov.hpa.domain.model.Device
 import java.util.*
 
-data class DeviceRequest(
+data class AddDeviceRequest(
     val mac: String,
     val plantId: UUID? = null,
 ) {

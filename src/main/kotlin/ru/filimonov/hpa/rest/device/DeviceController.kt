@@ -4,10 +4,11 @@ import org.apache.commons.logging.LogFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import ru.filimonov.hpa.domain.model.User
 import ru.filimonov.hpa.domain.service.DeviceService
-import ru.filimonov.hpa.rest.device.model.DeviceRequest
+import ru.filimonov.hpa.rest.device.model.AddDeviceRequest
 import ru.filimonov.hpa.rest.device.model.DeviceResponse
 import ru.filimonov.hpa.rest.device.model.UpdateDeviceRequest
 import ru.filimonov.hpa.rest.device.model.toResponse
@@ -32,7 +33,7 @@ class DeviceController(
     @PostMapping
     fun addDevice(
         @AuthenticationPrincipal user: User,
-        @RequestBody device: DeviceRequest,
+        @RequestBody device: AddDeviceRequest,
     ): ResponseEntity<DeviceResponse> {
         val createdDevice = deviceService.addDevice(device.toDomain(user.id)).toResponse()
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -49,6 +50,7 @@ class DeviceController(
     }
 
     @PutMapping("/{deviceId}")
+    @Transactional
     fun updateDevice(
         @AuthenticationPrincipal user: User,
         @PathVariable deviceId: UUID,

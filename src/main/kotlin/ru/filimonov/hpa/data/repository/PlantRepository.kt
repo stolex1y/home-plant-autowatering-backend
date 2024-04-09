@@ -5,4 +5,6 @@ import ru.filimonov.hpa.data.model.PlantEntity
 import java.util.*
 
 interface PlantRepository : CrudRepository<PlantEntity, UUID> {
+    fun findByUuid(plantId: UUID): PlantEntity?
+    fun findAllByUuidIn(plantIds: List<UUID>): List<PlantEntity>
 }

@@ -24,6 +24,10 @@ spring:
     jdbc-url: ${HPA_PROD_JDBC_URL}
     username: ${HPA_PROD_USERNAME}
     password: ${HPA_PROD_PASS}
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 21MB
 
 app:
   location:

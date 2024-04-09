@@ -6,10 +6,10 @@ import ru.filimonov.hpa.core.toDateTimeString
 import java.sql.Timestamp
 import java.util.*
 
-data class SensorReading<ReadingType>(
-    val reading: ReadingType,
+open class SensorReading<ReadingType>(
+    open val reading: ReadingType,
     @PastOrPresent
-    val timestamp: Calendar
+    open val timestamp: Calendar
 ) {
     constructor(
         reading: ReadingType,
