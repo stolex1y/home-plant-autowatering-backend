@@ -10,7 +10,16 @@ CREATE TABLE "plants"
     "soil_moisture_max" real,
     "light_lux_min"     int,
     "light_lux_max"     int,
-    "created_date"      timestamp NOT NULL DEFAULT (now())
+    "created_date"      timestamp NOT NULL DEFAULT (now()),
+    "photo"             uuid
+);
+
+CREATE TABLE "plant_photos"
+(
+    "uuid"         uuid PRIMARY KEY,
+    "photo"        bytea     NOT NULL,
+    "created_date" timestamp NOT NULL DEFAULT (now()),
+    "updated_date" timestamp NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "users_plants"
@@ -77,6 +86,8 @@ CREATE TABLE "water_reserve_readings"
     "device"       uuid      NOT NULL
 );
 
+CREATE UNIQUE INDEX ON "plants" ("photo");
+
 CREATE UNIQUE INDEX ON "devices" ("plant");
 
 CREATE UNIQUE INDEX ON "devices" ("mac", "user_id");
@@ -92,6 +103,9 @@ CREATE INDEX ON "light_lux_readings" ("timestamp");
 CREATE INDEX ON "soil_moisture_readings" ("timestamp");
 
 CREATE INDEX ON "water_reserve_readings" ("timestamp");
+
+ALTER TABLE "plants"
+    ADD FOREIGN KEY ("photo") REFERENCES "plant_photos" ("uuid") ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "users_plants"
     ADD FOREIGN KEY ("plant") REFERENCES "plants" ("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
