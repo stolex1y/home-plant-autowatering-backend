@@ -2,7 +2,7 @@ package ru.filimonov.hpa.domain.model
 
 import java.util.*
 
-data class PlantPhoto(
+data class Photo(
     val photo: ByteArray,
     val uuid: UUID = UUID.randomUUID(),
     val createdDate: Calendar = Calendar.getInstance(),
@@ -12,7 +12,7 @@ data class PlantPhoto(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as PlantPhoto
+        other as Photo
 
         return uuid == other.uuid
     }

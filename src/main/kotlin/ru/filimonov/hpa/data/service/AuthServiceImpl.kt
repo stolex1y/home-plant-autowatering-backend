@@ -11,11 +11,11 @@ class AuthServiceImpl(
     private val firebaseAuth: FirebaseAuth,
     private val authTokenRepository: AuthTokenRepository
 ) : AuthService {
-    override fun getRefreshToken(userId: String): Flow<String> {
+    override fun getRefreshToken(userId: String): Flow<Result<String>> {
         return authTokenRepository.getRefreshToken(firebaseAuth.createCustomToken(userId))
     }
 
-    override fun refreshIdToken(refreshToken: String): Flow<String> {
+    override fun refreshIdToken(refreshToken: String): Flow<Result<String>> {
         return authTokenRepository.refreshIdToken(refreshToken)
     }
 }

@@ -1,29 +1,25 @@
 package ru.filimonov.hpa.data.model
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EntityListeners
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import ru.filimonov.hpa.core.toCalendar
-import ru.filimonov.hpa.domain.model.PlantPhoto
+import ru.filimonov.hpa.domain.model.Photo
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.*
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
-@Table(name = "plant_photos")
-data class PlantPhotoEntity(
+@Table(name = "photos")
+data class PhotoEntity(
     val photo: ByteArray,
     @Id
     val uuid: UUID,
 ) {
     companion object {
-        fun PlantPhoto.toEntity() = PlantPhotoEntity(
+        fun Photo.toEntity() = PhotoEntity(
             photo = photo,
             uuid = uuid,
         )
@@ -36,7 +32,7 @@ data class PlantPhotoEntity(
     @LastModifiedDate
     var updatedDate: Timestamp = Timestamp.from(Instant.now())
 
-    fun toDomain() = PlantPhoto(
+    fun toDomain() = Photo(
         photo = photo,
         uuid = uuid,
         createdDate = createdDate.toCalendar(),
@@ -47,7 +43,7 @@ data class PlantPhotoEntity(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as PlantPhotoEntity
+        other as PhotoEntity
 
         return uuid == other.uuid
     }

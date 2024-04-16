@@ -5,9 +5,11 @@ import java.util.*
 
 data class UpdateDeviceRequest(
     val plantId: UUID? = null,
+    val name: String,
 ) {
     fun applyUpdates(device: Device): Device =
         device.copy(
-            plantId = plantId
+            plantId = plantId,
+            name = name,
         )
 }

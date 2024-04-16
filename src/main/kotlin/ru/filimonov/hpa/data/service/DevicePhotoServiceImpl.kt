@@ -7,48 +7,48 @@ import org.springframework.validation.annotation.Validated
 import ru.filimonov.hpa.data.model.PhotoEntity.Companion.toEntity
 import ru.filimonov.hpa.data.repository.PhotoRepository
 import ru.filimonov.hpa.domain.model.Photo
-import ru.filimonov.hpa.domain.service.PlantPhotoService
-import ru.filimonov.hpa.domain.service.PlantService
+import ru.filimonov.hpa.domain.service.DevicePhotoService
+import ru.filimonov.hpa.domain.service.DeviceService
 import java.util.*
 
 @Service
 @Validated
-class PlantPhotoServiceImpl(
-    private val plantService: PlantService,
+class DevicePhotoServiceImpl(
     private val photoRepository: PhotoRepository,
-) : PlantPhotoService {
+    private val deviceService: DeviceService,
+) : DevicePhotoService {
     private val log = LogFactory.getLog(javaClass)
 
     @Transactional
-    override fun updatePlantPhoto(userId: String, plantId: UUID, photoBytes: ByteArray) {
-        val plant = plantService.getPlantById(userId = userId, plantId = plantId)
-        if (plant.photo == null) {
+    override fun updateDevicePhoto(userId: String, deviceId: UUID, photoBytes: ByteArray) {
+        val device = deviceService.getDeviceById(userId = userId, deviceId = deviceId)
+        if (device.photoId == null) {
             val addedPhoto = photoRepository.save(Photo(photo = photoBytes).toEntity())
-            plantService.updatePlant(userId, plant.copy(photo = addedPhoto.uuid))
+            deviceService.updateDevice(device.copy(photoId = addedPhoto.uuid))
         } else {
             val beforeUpdatePhoto =
-                photoRepository.findById(plant.photo)
+                photoRepository.findById(device.photoId)
                     .orElseThrow { IllegalArgumentException("Not found resource") }
             photoRepository.save(beforeUpdatePhoto.copy(photo = photoBytes))
         }
     }
 
     @Transactional(readOnly = true)
-    override fun getPlantPhoto(userId: String, plantId: UUID): Photo? {
-        val photoId = plantService.getPlantById(userId = userId, plantId = plantId).photo
+    override fun getDevicePhoto(userId: String, deviceId: UUID): Photo? {
+        val photoId = deviceService.getDeviceById(userId = userId, deviceId = deviceId).photoId
             ?: return null
         return photoRepository.findById(photoId).get().toDomain()
     }
 
     @Transactional(readOnly = true)
-    override fun getPhotoUpdatedDate(userId: String, plantId: UUID): Calendar? {
-        val photoId = plantService.getPlantById(userId = userId, plantId = plantId).photo ?: return null
+    override fun getPhotoUpdatedDate(userId: String, deviceId: UUID): Calendar? {
+        val photoId = deviceService.getDeviceById(userId = userId, deviceId = deviceId).photoId ?: return null
         return photoRepository.findById(photoId).get().toDomain().updatedDate
     }
 
     @Transactional
-    override fun deletePlantPhoto(userId: String, plantId: UUID) {
-        val photoId = plantService.getPlantById(userId = userId, plantId = plantId).photo ?: return
+    override fun deleteDevicePhoto(userId: String, deviceId: UUID) {
+        val photoId = deviceService.getDeviceById(userId = userId, deviceId = deviceId).photoId ?: return
         photoRepository.deleteById(photoId)
     }
 }

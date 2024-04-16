@@ -16,6 +16,9 @@ data class DeviceEntity(
     val mac: String,
     @Column(name = "plant")
     val plantId: UUID? = null,
+    val name: String,
+    @Column(name = "photo")
+    val photoId: UUID? = null,
     val createdDate: Timestamp = Timestamp.from(Instant.now()),
     @GeneratedValue
     @Id
@@ -27,7 +30,9 @@ data class DeviceEntity(
             mac = mac,
             plantId = plantId,
             createdDate = createdDate.toTimestamp(),
-            uuid = uuid
+            uuid = uuid,
+            photoId = photoId,
+            name = name,
         )
     }
 
@@ -36,6 +41,8 @@ data class DeviceEntity(
         mac = mac,
         plantId = plantId,
         createdDate = createdDate.toCalendar(),
-        uuid = uuid
+        uuid = uuid,
+        name = name,
+        photoId = photoId,
     )
 }

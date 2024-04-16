@@ -14,14 +14,6 @@ CREATE TABLE "plants"
     "photo"             uuid
 );
 
-CREATE TABLE "plant_photos"
-(
-    "uuid"         uuid PRIMARY KEY,
-    "photo"        bytea     NOT NULL,
-    "created_date" timestamp NOT NULL DEFAULT (now()),
-    "updated_date" timestamp NOT NULL DEFAULT (now())
-);
-
 CREATE TABLE "users_plants"
 (
     "user_id" text NOT NULL,
@@ -31,11 +23,21 @@ CREATE TABLE "users_plants"
 
 CREATE TABLE "devices"
 (
+    "name"         text        NOT NULL,
     "uuid"         uuid PRIMARY KEY,
     "mac"          varchar(17) NOT NULL,
     "plant"        uuid,
     "user_id"      text        NOT NULL,
-    "created_date" timestamp   NOT NULL DEFAULT (now())
+    "created_date" timestamp   NOT NULL DEFAULT (now()),
+    "photo"        uuid
+);
+
+CREATE TABLE "photos"
+(
+    "uuid"         uuid PRIMARY KEY,
+    "photo"        bytea     NOT NULL,
+    "created_date" timestamp NOT NULL DEFAULT (now()),
+    "updated_date" timestamp NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "air_humidity_readings"
@@ -92,6 +94,8 @@ CREATE UNIQUE INDEX ON "devices" ("plant");
 
 CREATE UNIQUE INDEX ON "devices" ("mac", "user_id");
 
+CREATE UNIQUE INDEX ON "devices" ("photo");
+
 CREATE INDEX ON "air_humidity_readings" ("timestamp");
 
 CREATE INDEX ON "air_temp_readings" ("timestamp");
@@ -104,14 +108,17 @@ CREATE INDEX ON "soil_moisture_readings" ("timestamp");
 
 CREATE INDEX ON "water_reserve_readings" ("timestamp");
 
-ALTER TABLE "plants"
-    ADD FOREIGN KEY ("photo") REFERENCES "plant_photos" ("uuid") ON DELETE SET NULL ON UPDATE CASCADE;
-
 ALTER TABLE "users_plants"
     ADD FOREIGN KEY ("plant") REFERENCES "plants" ("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "devices"
     ADD FOREIGN KEY ("plant") REFERENCES "plants" ("uuid") ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE "plants"
+    ADD FOREIGN KEY ("photo") REFERENCES "photos" ("uuid") ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE "devices"
+    ADD FOREIGN KEY ("photo") REFERENCES "photos" ("uuid") ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "air_humidity_readings"
     ADD FOREIGN KEY ("device") REFERENCES "devices" ("uuid") ON DELETE CASCADE ON UPDATE CASCADE;

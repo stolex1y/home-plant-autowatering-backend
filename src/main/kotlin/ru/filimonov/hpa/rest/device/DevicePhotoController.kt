@@ -1,4 +1,4 @@
-package ru.filimonov.hpa.rest.plant
+package ru.filimonov.hpa.rest.device
 
 import org.apache.commons.logging.LogFactory
 import org.springframework.http.HttpStatus
@@ -8,41 +8,41 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import ru.filimonov.hpa.domain.model.User
-import ru.filimonov.hpa.domain.service.PlantPhotoService
+import ru.filimonov.hpa.domain.service.DevicePhotoService
 import java.util.*
 
 @RestController
-@RequestMapping("/plants/{plantId}/photo")
-class PlantPhotoController(
-    private val plantPhotoService: PlantPhotoService
+@RequestMapping("/devices/{deviceId}/photo")
+class DevicePhotoController(
+    private val devicePhotoService: DevicePhotoService
 ) {
     private val log = LogFactory.getLog(javaClass)
 
     @GetMapping
     fun getPlantPhoto(
         @AuthenticationPrincipal user: User,
-        @PathVariable plantId: UUID,
+        @PathVariable deviceId: UUID,
     ): ResponseEntity<ByteArray> {
-        return ResponseEntity.ok(plantPhotoService.getPlantPhoto(userId = user.id, plantId = plantId)?.photo)
+        return ResponseEntity.ok(devicePhotoService.getDevicePhoto(userId = user.id, deviceId = deviceId)?.photo)
     }
 
     @PutMapping
     @Transactional
     fun updatePlantPhoto(
         @AuthenticationPrincipal user: User,
-        @PathVariable plantId: UUID,
+        @PathVariable deviceId: UUID,
         @RequestParam("photo") photo: MultipartFile,
     ): ResponseEntity<Unit> {
-        plantPhotoService.updatePlantPhoto(userId = user.id, plantId = plantId, photoBytes = photo.bytes)
+        devicePhotoService.updateDevicePhoto(userId = user.id, deviceId = deviceId, photoBytes = photo.bytes)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 
     @DeleteMapping
     fun removePlantPhoto(
         @AuthenticationPrincipal user: User,
-        @PathVariable plantId: UUID,
+        @PathVariable deviceId: UUID,
     ): ResponseEntity<Unit> {
-        plantPhotoService.deletePlantPhoto(userId = user.id, plantId = plantId)
+        devicePhotoService.deleteDevicePhoto(userId = user.id, deviceId = deviceId)
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build()
     }
 }

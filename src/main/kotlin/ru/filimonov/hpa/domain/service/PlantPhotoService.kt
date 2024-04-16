@@ -1,11 +1,11 @@
 package ru.filimonov.hpa.domain.service
 
-import ru.filimonov.hpa.domain.model.PlantPhoto
+import ru.filimonov.hpa.domain.model.Photo
 import java.util.*
 
 interface PlantPhotoService {
     fun updatePlantPhoto(userId: String, plantId: UUID, photoBytes: ByteArray)
-    fun getPlantPhoto(userId: String, plantId: UUID): PlantPhoto
+    fun getPlantPhoto(userId: String, plantId: UUID): Photo?
     fun getPhotoUpdatedDate(userId: String, plantId: UUID): Calendar?
     fun deletePlantPhoto(userId: String, plantId: UUID)
 }
