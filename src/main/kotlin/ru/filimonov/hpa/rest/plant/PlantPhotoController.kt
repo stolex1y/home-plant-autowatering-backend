@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import ru.filimonov.hpa.core.CALENDAR_MIN
 import ru.filimonov.hpa.domain.model.User
 import ru.filimonov.hpa.domain.service.PlantPhotoService
 import java.util.*
@@ -22,8 +23,20 @@ class PlantPhotoController(
     fun getPlantPhoto(
         @AuthenticationPrincipal user: User,
         @PathVariable plantId: UUID,
-    ): ResponseEntity<ByteArray> {
-        return ResponseEntity.ok(plantPhotoService.getPlantPhoto(userId = user.id, plantId = plantId)?.photo)
+        @RequestHeader("If-Modified-Since") modifiedSince: Calendar = CALENDAR_MIN,
+    ): ResponseEntity<ByteArray?> {
+        val lastModified = plantPhotoService.getPhotoUpdatedDate(userId = user.id, plantId = plantId)
+            ?: return ResponseEntity.notFound().build()
+
+        if (lastModified < modifiedSince) {
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build()
+        }
+
+        val photo = plantPhotoService.getPlantPhoto(
+            userId = user.id, plantId = plantId
+        ) ?: return ResponseEntity.notFound().build()
+
+        return ResponseEntity.ok().lastModified(photo.updatedDate.timeInMillis).body(photo.photo)
     }
 
     @PutMapping

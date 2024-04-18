@@ -8,8 +8,8 @@ import ru.filimonov.hpa.data.repository.DeviceRepository
 import ru.filimonov.hpa.domain.model.Device
 import ru.filimonov.hpa.domain.service.DeviceService
 import ru.filimonov.hpa.domain.service.PlantService
+import ru.filimonov.hpa.domain.validation.domainRequire
 import ru.filimonov.hpa.domain.validation.domainRequireNotNull
-import ru.filimonov.hpa.domain.validation.domainRequireNull
 import java.util.*
 
 @Service
@@ -63,7 +63,8 @@ class DeviceServiceImpl(
     }
 
     private fun checkUniqueMacAddress(device: Device) {
-        domainRequireNull(repository.findByMac(device.mac), "mac") {
+        val other = repository.findByMac(device.mac) ?: return
+        domainRequire(other.uuid == device.uuid, "mac") {
             "This user has already added a device with this MAC address"
         }
     }
