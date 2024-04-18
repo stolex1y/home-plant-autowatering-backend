@@ -1,12 +1,10 @@
 package ru.filimonov.hpa.rest.auth
 
 import kotlinx.coroutines.flow.first
-import org.springframework.security.access.annotation.Secured
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import ru.filimonov.hpa.domain.model.User
 import ru.filimonov.hpa.domain.service.auth.AuthService
@@ -17,15 +15,17 @@ class AuthController(
 ) {
     @GetMapping("/auth")
     suspend fun authenticate(@AuthenticationPrincipal user: User): AuthResponse {
+        val refreshToken = authService.getRefreshToken(user.id).first().getOrThrow()
         return AuthResponse(
-            refreshToken = authService.getRefreshToken(user.id).first()
+            refreshToken = refreshToken
         )
     }
 
     @PostMapping("/reauth")
     suspend fun refreshIdToken(@RequestBody refreshTokenRequest: RefreshTokenRequest): RefreshTokenResponse {
+        val idToken = authService.refreshIdToken(refreshTokenRequest.refreshToken).first().getOrThrow()
         return RefreshTokenResponse(
-            idToken = authService.refreshIdToken(refreshTokenRequest.refreshToken).first()
+            idToken = idToken
         )
     }
 }

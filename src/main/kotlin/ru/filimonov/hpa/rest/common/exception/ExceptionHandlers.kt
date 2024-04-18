@@ -123,6 +123,14 @@ class ExceptionHandlers {
     }
 
     @ExceptionHandler
+    fun handleException(ex: IllegalArgumentException): ResponseEntity<ExceptionHandlerResponse> {
+        return ExceptionHandlerResponse(
+            message = ex.message ?: "Illegal argument",
+            status = HttpStatus.BAD_REQUEST
+        ).toResponseEntity()
+    }
+
+    @ExceptionHandler
     fun handleException(ex: Throwable): ResponseEntity<ExceptionHandlerResponse> {
         return ExceptionHandlerResponse(
             message = "Internal server error",
