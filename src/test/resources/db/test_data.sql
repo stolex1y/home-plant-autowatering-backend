@@ -11,8 +11,19 @@ CREATE OR REPLACE FUNCTION gen_random_int(min integer, max integer) RETURNS inte
 
 create or replace function gen_random_mac() returns text as
 '
+    declare
+        mac text;
     begin
-        return substr(md5(random()::text), 0, 16);
+        select substr(md5(random()::text), 1, 12)
+        into mac;
+        select substr(mac, 1, 2) || ''-'' ||
+               substr(mac, 3, 2) || ''-'' ||
+               substr(mac, 5, 2) || ''-'' ||
+               substr(mac, 7, 2) || ''-'' ||
+               substr(mac, 9, 2) || ''-'' ||
+               substr(mac, 11, 2)
+        into mac;
+        return mac;
     end;
 ' language plpgsql;
 
@@ -31,11 +42,13 @@ create or replace function gen_test_devices(device_count integer, user_count int
                     loop
                         insert
                         into devices
-                        select gen_random_uuid() uuid,
-                               gen_random_mac()  mac,
-                               null              plant,
-                               user_id           user_id,
-                               now_utc()         created_date;
+                        values ((select gen_random_mac()),
+                                (select gen_random_uuid()),
+                                (gen_random_mac()),
+                                null,
+                                user_id,
+                                (select now_utc()),
+                                null);
                     end loop;
             end loop;
     end;
@@ -148,7 +161,7 @@ create or replace function gen_test_plants() returns void as
                 into light_lux_max;
 
                 insert
-                into plants
+                    into plants
                 values (plant_id,
                         (select gen_random_uuid()::text),
                         air_temp_min,
