@@ -1,6 +1,10 @@
 package ru.filimonov.hpa.rest.plant.model
 
+import org.springframework.hateoas.server.mvc.linkTo
 import ru.filimonov.hpa.domain.model.Plant
+import ru.filimonov.hpa.domain.model.User
+import ru.filimonov.hpa.rest.plant.PlantPhotoController
+import java.net.URI
 import java.util.*
 
 data class PlantResponse(
@@ -13,12 +17,12 @@ data class PlantResponse(
     val soilMoistureMax: Float?,
     val lightLuxMax: Int?,
     val lightLuxMin: Int?,
-    val photo: UUID?,
+    val photoUri: URI?,
     val createdDate: Calendar,
     val uuid: UUID,
 ) {
     companion object {
-        fun Plant.toResponse() = PlantResponse(
+        fun Plant.toResponse(user: User) = PlantResponse(
             name = name,
             airTempMin = airTempMin,
             airTempMax = airTempMax,
@@ -28,7 +32,7 @@ data class PlantResponse(
             soilMoistureMax = soilMoistureMax,
             lightLuxMin = lightLuxMin,
             lightLuxMax = lightLuxMax,
-            photo = photo,
+            photoUri = linkTo<PlantPhotoController> { getPlantPhoto(user = user, plantId = uuid) }.toUri(),
             uuid = uuid,
             createdDate = createdDate,
         )

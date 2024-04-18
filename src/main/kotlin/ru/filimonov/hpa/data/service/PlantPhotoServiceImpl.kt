@@ -22,12 +22,12 @@ class PlantPhotoServiceImpl(
     @Transactional
     override fun updatePlantPhoto(userId: String, plantId: UUID, photoBytes: ByteArray) {
         val plant = plantService.getPlantById(userId = userId, plantId = plantId)
-        if (plant.photo == null) {
+        if (plant.photoId == null) {
             val addedPhoto = photoRepository.save(Photo(photo = photoBytes).toEntity())
-            plantService.updatePlant(userId, plant.copy(photo = addedPhoto.uuid))
+            plantService.updatePlant(userId, plant.copy(photoId = addedPhoto.uuid))
         } else {
             val beforeUpdatePhoto =
-                photoRepository.findById(plant.photo)
+                photoRepository.findById(plant.photoId)
                     .orElseThrow { IllegalArgumentException("Not found resource") }
             photoRepository.save(beforeUpdatePhoto.copy(photo = photoBytes))
         }
@@ -35,20 +35,20 @@ class PlantPhotoServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getPlantPhoto(userId: String, plantId: UUID): Photo? {
-        val photoId = plantService.getPlantById(userId = userId, plantId = plantId).photo
+        val photoId = plantService.getPlantById(userId = userId, plantId = plantId).photoId
             ?: return null
         return photoRepository.findById(photoId).get().toDomain()
     }
 
     @Transactional(readOnly = true)
     override fun getPhotoUpdatedDate(userId: String, plantId: UUID): Calendar? {
-        val photoId = plantService.getPlantById(userId = userId, plantId = plantId).photo ?: return null
+        val photoId = plantService.getPlantById(userId = userId, plantId = plantId).photoId ?: return null
         return photoRepository.findById(photoId).get().toDomain().updatedDate
     }
 
     @Transactional
     override fun deletePlantPhoto(userId: String, plantId: UUID) {
-        val photoId = plantService.getPlantById(userId = userId, plantId = plantId).photo ?: return
+        val photoId = plantService.getPlantById(userId = userId, plantId = plantId).photoId ?: return
         photoRepository.deleteById(photoId)
     }
 }

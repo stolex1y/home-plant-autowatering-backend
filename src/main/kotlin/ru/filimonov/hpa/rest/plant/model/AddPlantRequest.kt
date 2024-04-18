@@ -23,6 +23,6 @@ data class AddPlantRequest(
         soilMoistureMax = soilMoistureMax,
         lightLuxMin = lightLuxMin,
         lightLuxMax = lightLuxMax,
-        photo = null,
+        photoId = null,
     )
 }

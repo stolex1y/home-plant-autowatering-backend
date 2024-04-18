@@ -19,7 +19,7 @@ class DevicePhotoController(
     private val log = LogFactory.getLog(javaClass)
 
     @GetMapping
-    fun getPlantPhoto(
+    fun getDevicePhoto(
         @AuthenticationPrincipal user: User,
         @PathVariable deviceId: UUID,
     ): ResponseEntity<ByteArray> {
@@ -28,7 +28,7 @@ class DevicePhotoController(
 
     @PutMapping
     @Transactional
-    fun updatePlantPhoto(
+    fun updateDevicePhoto(
         @AuthenticationPrincipal user: User,
         @PathVariable deviceId: UUID,
         @RequestParam("photo") photo: MultipartFile,
@@ -38,7 +38,7 @@ class DevicePhotoController(
     }
 
     @DeleteMapping
-    fun removePlantPhoto(
+    fun removeDevicePhoto(
         @AuthenticationPrincipal user: User,
         @PathVariable deviceId: UUID,
     ): ResponseEntity<Unit> {

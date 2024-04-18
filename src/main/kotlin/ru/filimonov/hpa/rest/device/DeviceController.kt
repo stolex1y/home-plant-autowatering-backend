@@ -26,7 +26,7 @@ class DeviceController(
         @AuthenticationPrincipal user: User
     ): ResponseEntity<List<DeviceResponse>> {
         val devices = deviceService.getAllDevicesByUserId(user.id)
-            .map { it.toResponse() }
+            .map { it.toResponse(user) }
         return ResponseEntity.ok(devices)
     }
 
@@ -35,7 +35,7 @@ class DeviceController(
         @AuthenticationPrincipal user: User,
         @RequestBody device: AddDeviceRequest,
     ): ResponseEntity<DeviceResponse> {
-        val createdDevice = deviceService.addDevice(device.toDomain(user.id)).toResponse()
+        val createdDevice = deviceService.addDevice(device.toDomain(user.id)).toResponse(user)
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(createdDevice)
     }
@@ -45,7 +45,7 @@ class DeviceController(
         @AuthenticationPrincipal user: User,
         @PathVariable deviceId: UUID,
     ): ResponseEntity<DeviceResponse> {
-        val device = deviceService.getDeviceById(user.id, deviceId).toResponse()
+        val device = deviceService.getDeviceById(user.id, deviceId).toResponse(user)
         return ResponseEntity.ok(device)
     }
 
@@ -59,7 +59,7 @@ class DeviceController(
         val beforeUpdate = deviceService.getDeviceById(userId = user.id, deviceId = deviceId)
         val afterUpdate = deviceUpdate.applyUpdates(beforeUpdate)
         deviceService.updateDevice(afterUpdate)
-        return ResponseEntity.ok(afterUpdate.toResponse())
+        return ResponseEntity.ok(afterUpdate.toResponse(user))
     }
 
     @DeleteMapping("/{deviceId}")

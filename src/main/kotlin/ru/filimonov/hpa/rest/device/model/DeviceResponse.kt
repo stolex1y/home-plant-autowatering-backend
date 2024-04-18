@@ -1,6 +1,10 @@
 package ru.filimonov.hpa.rest.device.model
 
+import org.springframework.hateoas.server.mvc.linkTo
 import ru.filimonov.hpa.domain.model.Device
+import ru.filimonov.hpa.domain.model.User
+import ru.filimonov.hpa.rest.device.DevicePhotoController
+import java.net.URI
 import java.util.*
 
 data class DeviceResponse(
@@ -9,14 +13,14 @@ data class DeviceResponse(
     val createdDate: Long,
     val name: String,
     val mac: String,
-    val photoId: UUID?,
+    val photo: URI?,
 )
 
-fun Device.toResponse() = DeviceResponse(
+fun Device.toResponse(user: User) = DeviceResponse(
     uuid = uuid,
     plantId = plantId,
     createdDate = createdDate.timeInMillis,
     name = name,
     mac = mac,
-    photoId = photoId,
+    photo = linkTo<DevicePhotoController> { getDevicePhoto(user = user, deviceId = uuid) }.toUri(),
 )

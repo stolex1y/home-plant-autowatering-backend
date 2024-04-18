@@ -42,7 +42,7 @@ data class PlantEntity(
             soilMoistureMax = soilMoistureMax,
             lightLuxMin = lightLuxMin,
             lightLuxMax = lightLuxMax,
-            photo = photo,
+            photo = photoId,
             uuid = uuid,
         )
     }
@@ -57,7 +57,7 @@ data class PlantEntity(
         soilMoistureMax = soilMoistureMax,
         lightLuxMin = lightLuxMin,
         lightLuxMax = lightLuxMax,
-        photo = photo,
+        photoId = photo,
         createdDate = createdDate.toCalendar(),
         uuid = uuid,
     )

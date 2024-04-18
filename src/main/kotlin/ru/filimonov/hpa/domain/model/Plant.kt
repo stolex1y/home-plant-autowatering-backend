@@ -24,7 +24,7 @@ data class Plant(
     val lightLuxMax: Int?,
     @InRange(min = 0.0, max = 130_000.0)
     val lightLuxMin: Int?,
-    val photo: UUID?,
+    val photoId: UUID?,
     val createdDate: Calendar = Calendar.getInstance(),
     val uuid: UUID = UUID.randomUUID(),
 ) {

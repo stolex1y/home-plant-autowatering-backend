@@ -26,7 +26,7 @@ class PlantController(
         @AuthenticationPrincipal user: User
     ): ResponseEntity<List<PlantResponse>> {
         val plants = plantService.getAllPlants(user.id)
-            .map { it.toResponse() }
+            .map { it.toResponse(user) }
         return ResponseEntity.ok(plants)
     }
 
@@ -36,7 +36,7 @@ class PlantController(
         @PathVariable ids: List<UUID>,
     ): ResponseEntity<List<PlantResponse>> {
         val plants = plantService.getPlantsByIds(user.id, ids)
-            .map { it.toResponse() }
+            .map { it.toResponse(user) }
         return ResponseEntity.ok(plants)
     }
 
@@ -45,7 +45,7 @@ class PlantController(
         @AuthenticationPrincipal user: User,
         @PathVariable plantId: UUID,
     ): ResponseEntity<PlantResponse> {
-        val plant = plantService.getPlantById(user.id, plantId).toResponse()
+        val plant = plantService.getPlantById(user.id, plantId).toResponse(user)
         return ResponseEntity.ok(plant)
     }
 
@@ -54,7 +54,7 @@ class PlantController(
         @AuthenticationPrincipal user: User,
         @RequestBody plant: AddPlantRequest,
     ): ResponseEntity<PlantResponse> {
-        val createdPlant = plantService.addPlant(user.id, plant.toDomain()).toResponse()
+        val createdPlant = plantService.addPlant(user.id, plant.toDomain()).toResponse(user)
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(createdPlant)
     }
@@ -69,7 +69,7 @@ class PlantController(
         val beforeUpdate = plantService.getPlantById(userId = user.id, plantId = plantId)
         val afterUpdate = plantUpdate.applyUpdates(beforeUpdate)
         plantService.updatePlant(userId = user.id, plant = afterUpdate)
-        return ResponseEntity.ok(afterUpdate.toResponse())
+        return ResponseEntity.ok(afterUpdate.toResponse(user))
     }
 
     @DeleteMapping("/{plantId}")
