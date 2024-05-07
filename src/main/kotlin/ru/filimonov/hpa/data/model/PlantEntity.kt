@@ -1,10 +1,9 @@
 package ru.filimonov.hpa.data.model
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import ru.filimonov.hpa.core.toCalendar
 import ru.filimonov.hpa.domain.model.Plant
 import java.sql.Timestamp
@@ -13,6 +12,7 @@ import java.util.*
 
 @Entity
 @Table(name = "plants")
+@EntityListeners(AuditingEntityListener::class)
 data class PlantEntity(
     val name: String,
     val airTempMin: Float?,
@@ -21,9 +21,10 @@ data class PlantEntity(
     val airHumidityMax: Float?,
     val soilMoistureMin: Float?,
     val soilMoistureMax: Float?,
-    val lightLuxMin: Int?,
-    val lightLuxMax: Int?,
+    val lightLevelMin: Int?,
+    val lightLevelMax: Int?,
     val photo: UUID?,
+
     @Id
     val uuid: UUID,
 ) {
@@ -31,21 +32,8 @@ data class PlantEntity(
     @Column(updatable = false)
     var createdDate: Timestamp = Timestamp.from(Instant.now())
 
-    companion object {
-        fun Plant.toEntity() = PlantEntity(
-            name = name,
-            airTempMin = airTempMin,
-            airTempMax = airTempMax,
-            airHumidityMin = airHumidityMin,
-            airHumidityMax = airHumidityMax,
-            soilMoistureMin = soilMoistureMin,
-            soilMoistureMax = soilMoistureMax,
-            lightLuxMin = lightLuxMin,
-            lightLuxMax = lightLuxMax,
-            photo = photoId,
-            uuid = uuid,
-        )
-    }
+    @LastModifiedDate
+    var updatedDate: Timestamp = Timestamp.from(Instant.now())
 
     fun toDomain() = Plant(
         name = name,
@@ -55,10 +43,25 @@ data class PlantEntity(
         airHumidityMax = airHumidityMax,
         soilMoistureMin = soilMoistureMin,
         soilMoistureMax = soilMoistureMax,
-        lightLuxMin = lightLuxMin,
-        lightLuxMax = lightLuxMax,
+        lightLevelMin = lightLevelMin,
+        lightLevelMax = lightLevelMax,
         photoId = photo,
         createdDate = createdDate.toCalendar(),
+        updatedDate = updatedDate.toCalendar(),
         uuid = uuid,
     )
 }
+
+fun Plant.toEntity() = PlantEntity(
+    name = name,
+    airTempMin = airTempMin,
+    airTempMax = airTempMax,
+    airHumidityMin = airHumidityMin,
+    airHumidityMax = airHumidityMax,
+    soilMoistureMin = soilMoistureMin,
+    soilMoistureMax = soilMoistureMax,
+    lightLevelMin = lightLevelMin,
+    lightLevelMax = lightLevelMax,
+    photo = photoId,
+    uuid = uuid,
+)

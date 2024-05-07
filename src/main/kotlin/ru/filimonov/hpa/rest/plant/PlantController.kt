@@ -1,6 +1,7 @@
 package ru.filimonov.hpa.rest.plant
 
 import org.apache.commons.logging.LogFactory
+import org.springframework.data.jpa.repository.Query
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -22,22 +23,19 @@ class PlantController(
     private val log = LogFactory.getLog(javaClass)
 
     @GetMapping
-    fun getAllPlants(
-        @AuthenticationPrincipal user: User
-    ): ResponseEntity<List<PlantResponse>> {
-        val plants = plantService.getAllPlants(user.id)
-            .map { it.toResponse(user) }
-        return ResponseEntity.ok(plants)
-    }
-
-    @GetMapping("/{ids}")
     fun getPlantsByIds(
         @AuthenticationPrincipal user: User,
-        @PathVariable ids: List<UUID>,
+        @RequestParam(required = false, name = "ids") ids: List<UUID> = emptyList(),
     ): ResponseEntity<List<PlantResponse>> {
-        val plants = plantService.getPlantsByIds(user.id, ids)
-            .map { it.toResponse(user) }
-        return ResponseEntity.ok(plants)
+        if (ids.isEmpty()) {
+            val plants = plantService.getAllPlants(user.id)
+                .map { it.toResponse(user) }
+            return ResponseEntity.ok(plants)
+        } else {
+            val plants = plantService.getPlantsByIds(user.id, ids)
+                .map { it.toResponse(user) }
+            return ResponseEntity.ok(plants)
+        }
     }
 
     @GetMapping("/{plantId}")

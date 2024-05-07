@@ -15,16 +15,10 @@ import java.util.*
 @Table(name = "photos")
 data class PhotoEntity(
     val photo: ByteArray,
+
     @Id
     val uuid: UUID,
 ) {
-    companion object {
-        fun Photo.toEntity() = PhotoEntity(
-            photo = photo,
-            uuid = uuid,
-        )
-    }
-
     @CreatedDate
     @Column(updatable = false)
     var createdDate: Timestamp = Timestamp.from(Instant.now())
@@ -52,3 +46,8 @@ data class PhotoEntity(
         return uuid.hashCode()
     }
 }
+
+fun Photo.toEntity() = PhotoEntity(
+    photo = photo,
+    uuid = uuid,
+)

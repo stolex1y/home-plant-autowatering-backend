@@ -21,7 +21,7 @@ data class UpdatePlantRequest(
         airHumidityMax = airHumidityMax,
         soilMoistureMin = soilMoistureMin,
         soilMoistureMax = soilMoistureMax,
-        lightLuxMin = lightLuxMin,
-        lightLuxMax = lightLuxMax,
+        lightLevelMin = lightLuxMin,
+        lightLevelMax = lightLuxMax,
     )
 }

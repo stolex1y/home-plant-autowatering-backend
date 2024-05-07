@@ -4,8 +4,8 @@ import org.apache.commons.logging.LogFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
-import ru.filimonov.hpa.data.model.PlantEntity.Companion.toEntity
 import ru.filimonov.hpa.data.model.UsersPlantsMapEntity
+import ru.filimonov.hpa.data.model.toEntity
 import ru.filimonov.hpa.data.repository.PlantRepository
 import ru.filimonov.hpa.data.repository.UsersPlantsMapRepository
 import ru.filimonov.hpa.domain.model.Plant
@@ -34,7 +34,7 @@ class PlantServiceImpl(
     override fun getPlantsByIds(userId: String, plantIds: List<UUID>): List<Plant> {
         val userPlants = usersPlantsMapRepository.findAllByUserAndPlantIn(userId, plantIds)
             .map { it.plant }
-        return plantRepository.findAllByUuidIn(plantIds = userPlants).map { it.toDomain() }
+        return plantRepository.findAllByUuidInOrderByUuid(plantIds = userPlants).map { it.toDomain() }
     }
 
     @Transactional
@@ -66,7 +66,7 @@ class PlantServiceImpl(
         val plantIds = usersPlantsMapRepository.findAllByUser(userId).map {
             it.plant
         }.toList()
-        return plantRepository.findAllByUuidIn(plantIds = plantIds).map { it.toDomain() }
+        return plantRepository.findAllByUuidInOrderByUuid(plantIds = plantIds).map { it.toDomain() }
     }
 
     private fun checkUserHasPlant(userId: String, plantId: UUID) {

@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component
 import org.springframework.validation.annotation.Validated
 import ru.filimonov.hpa.data.repository.DeviceRepository
 import ru.filimonov.hpa.data.repository.MqttOutboundRepository
-import ru.filimonov.hpa.domain.mqtt.MqttMessageHandler
+import ru.filimonov.hpa.mqtt.MqttMessageHandler
 import java.util.*
 
 
@@ -134,16 +134,16 @@ class MqttClientConfiguration {
                 val topicFullName = message.topic()
                 runCatching<Boolean> {
                     val topic = Topic(topicFullName)
-                    if (!deviceRepository.existsById(topic.deviceId)) {
-                        throw IllegalArgumentException("Couldn't find device by id: ${topic.deviceId}")
-                    }
+                    val device = deviceRepository.findById(topic.deviceId)
+                        .orElseThrow { IllegalArgumentException("Couldn't find device by id: ${topic.deviceId}") }
+                        .toDomain()
                     val handlers: List<MqttMessageHandler>? = topicHandlers[topic.sensorType]
                     if (handlers.isNullOrEmpty()) {
                         return@runCatching false
                     }
                     handlers.forEach {
                         it.handle(
-                            topic.deviceId, message.payload.toString()
+                            device, message.payload.toString()
                         )
                     }
                     return@runCatching true

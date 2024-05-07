@@ -3,7 +3,7 @@ package ru.filimonov.hpa.data.service
 import org.apache.commons.logging.LogFactory
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
-import ru.filimonov.hpa.data.model.DeviceEntity.Companion.toEntity
+import ru.filimonov.hpa.data.model.toEntity
 import ru.filimonov.hpa.data.repository.DeviceRepository
 import ru.filimonov.hpa.domain.model.Device
 import ru.filimonov.hpa.domain.service.DeviceService
@@ -28,7 +28,7 @@ class DeviceServiceImpl(
     }
 
     override fun getAllDevicesByUserId(userId: String): List<Device> {
-        return repository.findAllByUserId(userId).map {
+        return repository.findAllByUserIdOrderByUuid(userId).map {
             it.toDomain()
         }
     }

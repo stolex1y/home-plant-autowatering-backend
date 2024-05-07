@@ -4,7 +4,7 @@ import org.apache.commons.logging.LogFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
-import ru.filimonov.hpa.data.model.PhotoEntity.Companion.toEntity
+import ru.filimonov.hpa.data.model.toEntity
 import ru.filimonov.hpa.data.repository.PhotoRepository
 import ru.filimonov.hpa.domain.model.Photo
 import ru.filimonov.hpa.domain.service.PlantPhotoService

@@ -13,5 +13,9 @@ data class AddDeviceRequest(
         mac = mac,
         plantId = plantId,
         name = name,
+        photoId = null,
+        createdDate = Calendar.getInstance(),
+        updatedDate = Calendar.getInstance(),
+        uuid = UUID.randomUUID(),
     )
 }

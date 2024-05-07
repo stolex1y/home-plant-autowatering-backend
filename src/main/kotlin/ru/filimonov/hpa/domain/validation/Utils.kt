@@ -29,3 +29,13 @@ fun <T> domainRequireNull(value: T?, field: String, errorMessage: () -> String) 
 fun <T> domainRequireNull(value: T?, errorMessage: () -> String) {
     domainRequire(value = (value == null), errorMessage = errorMessage)
 }
+
+fun requireMaxValueGrOrEqMin(max: Float?, maxName: String, min: Float?, minName: String) {
+    if (max != null && min != null) {
+        domainRequire(max >= min, maxName) { "$maxName must be >= $minName" }
+    }
+}
+
+fun requireMaxValueGrOrEqMin(max: Int?, maxName: String, min: Int?, minName: String) {
+    requireMaxValueGrOrEqMin(max = max?.toFloat(), maxName = maxName, min = min?.toFloat(), minName = minName)
+}

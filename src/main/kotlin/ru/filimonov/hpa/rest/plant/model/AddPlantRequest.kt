@@ -1,6 +1,7 @@
 package ru.filimonov.hpa.rest.plant.model
 
 import ru.filimonov.hpa.domain.model.Plant
+import java.util.*
 
 data class AddPlantRequest(
     val name: String,
@@ -21,8 +22,11 @@ data class AddPlantRequest(
         airHumidityMax = airHumidityMax,
         soilMoistureMin = soilMoistureMin,
         soilMoistureMax = soilMoistureMax,
-        lightLuxMin = lightLuxMin,
-        lightLuxMax = lightLuxMax,
+        lightLevelMin = lightLuxMin,
+        lightLevelMax = lightLuxMax,
         photoId = null,
+        createdDate = Calendar.getInstance(),
+        updatedDate = Calendar.getInstance(),
+        uuid = UUID.randomUUID(),
     )
 }

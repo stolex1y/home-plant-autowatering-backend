@@ -7,13 +7,21 @@ import java.util.*
 
 data class Device(
     val userId: String,
+
     @MacAddress
     val mac: String,
+
     @NotBlank
     val name: String,
-    val photoId: UUID? = null,
-    val plantId: UUID? = null,
+
+    val photoId: UUID?,
+    val plantId: UUID?,
+
     @PastOrPresent
-    val createdDate: Calendar = Calendar.getInstance(),
-    val uuid: UUID = UUID.randomUUID(),
+    val createdDate: Calendar,
+
+    @PastOrPresent
+    val updatedDate: Calendar,
+
+    val uuid: UUID,
 )

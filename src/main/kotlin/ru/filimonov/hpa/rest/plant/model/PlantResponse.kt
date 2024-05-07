@@ -18,7 +18,7 @@ data class PlantResponse(
     val lightLuxMax: Int?,
     val lightLuxMin: Int?,
     val photoUri: URI?,
-    val createdDate: Calendar,
+    val createdDate: Long,
     val uuid: UUID,
 ) {
     companion object {
@@ -30,11 +30,11 @@ data class PlantResponse(
             airHumidityMax = airHumidityMax,
             soilMoistureMin = soilMoistureMin,
             soilMoistureMax = soilMoistureMax,
-            lightLuxMin = lightLuxMin,
-            lightLuxMax = lightLuxMax,
+            lightLuxMin = lightLevelMin,
+            lightLuxMax = lightLevelMax,
             photoUri = linkTo<PlantPhotoController> { getPlantPhoto(user = user, plantId = uuid) }.toUri(),
             uuid = uuid,
-            createdDate = createdDate,
+            createdDate = createdDate.timeInMillis,
         )
     }
 }
