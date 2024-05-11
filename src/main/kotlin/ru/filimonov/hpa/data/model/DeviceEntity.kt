@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import ru.filimonov.hpa.core.toCalendar
+import ru.filimonov.hpa.common.toCalendar
 import ru.filimonov.hpa.domain.model.Device
 import java.sql.Timestamp
 import java.time.Instant

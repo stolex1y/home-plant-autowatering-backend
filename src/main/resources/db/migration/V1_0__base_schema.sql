@@ -7,10 +7,10 @@ CREATE TABLE "plants"
     "air_humidity_min"  real,
     "air_humidity_max"  real,
     "soil_moisture_min" real,
-    "soil_moisture_max" real,
-    "light_lux_min"     int,
-    "light_lux_max"     int,
+    "light_level_min"   int,
+    "light_level_max"   int,
     "created_date"      timestamp NOT NULL DEFAULT (now()),
+    "updated_date"      timestamp NOT NULL DEFAULT (now()),
     "photo"             uuid
 );
 
@@ -29,6 +29,7 @@ CREATE TABLE "devices"
     "plant"        uuid,
     "user_id"      text        NOT NULL,
     "created_date" timestamp   NOT NULL DEFAULT (now()),
+    "updated_date" timestamp   NOT NULL DEFAULT (now()),
     "photo"        uuid
 );
 
@@ -42,71 +43,59 @@ CREATE TABLE "photos"
 
 CREATE TABLE "air_humidity_readings"
 (
-    "uuid"      uuid PRIMARY KEY,
     "reading"   real      NOT NULL,
     "timestamp" timestamp NOT NULL DEFAULT (now()),
-    "device"    uuid      NOT NULL
+    "device"    uuid      NOT NULL,
+    PRIMARY KEY ("device", "timestamp")
 );
 
 CREATE TABLE "air_temp_readings"
 (
-    "uuid"      uuid PRIMARY KEY,
     "reading"   real      NOT NULL,
     "timestamp" timestamp NOT NULL DEFAULT (now()),
-    "device"    uuid      NOT NULL
+    "device"    uuid      NOT NULL,
+    PRIMARY KEY ("device", "timestamp")
 );
 
 CREATE TABLE "battery_charge_readings"
 (
-    "uuid"      uuid PRIMARY KEY,
     "reading"   real      NOT NULL,
     "timestamp" timestamp NOT NULL DEFAULT (now()),
-    "device"    uuid      NOT NULL
+    "device"    uuid      NOT NULL,
+    PRIMARY KEY ("device", "timestamp")
 );
 
-CREATE TABLE "light_lux_readings"
+CREATE TABLE "light_level_readings"
 (
-    "uuid"      uuid PRIMARY KEY,
     "reading"   int       NOT NULL,
     "timestamp" timestamp NOT NULL DEFAULT (now()),
-    "device"    uuid      NOT NULL
+    "device"    uuid      NOT NULL,
+    PRIMARY KEY ("device", "timestamp")
 );
 
 CREATE TABLE "soil_moisture_readings"
 (
-    "uuid"      uuid PRIMARY KEY,
     "reading"   real      NOT NULL,
     "timestamp" timestamp NOT NULL DEFAULT (now()),
-    "device"    uuid      NOT NULL
+    "device"    uuid      NOT NULL,
+    PRIMARY KEY ("device", "timestamp")
 );
 
 CREATE TABLE "water_reserve_readings"
 (
-    "uuid"         uuid PRIMARY KEY,
-    "enough_water" bool      NOT NULL,
-    "timestamp"    timestamp NOT NULL DEFAULT (now()),
-    "device"       uuid      NOT NULL
+    "reading"   real      NOT NULL,
+    "timestamp" timestamp NOT NULL DEFAULT (now()),
+    "device"    uuid      NOT NULL,
+    PRIMARY KEY ("device", "timestamp")
 );
 
 CREATE UNIQUE INDEX ON "plants" ("photo");
 
-CREATE UNIQUE INDEX ON "devices" ("plant");
+CREATE INDEX ON "devices" ("plant");
 
 CREATE UNIQUE INDEX ON "devices" ("mac", "user_id");
 
 CREATE UNIQUE INDEX ON "devices" ("photo");
-
-CREATE INDEX ON "air_humidity_readings" ("timestamp");
-
-CREATE INDEX ON "air_temp_readings" ("timestamp");
-
-CREATE INDEX ON "battery_charge_readings" ("timestamp");
-
-CREATE INDEX ON "light_lux_readings" ("timestamp");
-
-CREATE INDEX ON "soil_moisture_readings" ("timestamp");
-
-CREATE INDEX ON "water_reserve_readings" ("timestamp");
 
 ALTER TABLE "users_plants"
     ADD FOREIGN KEY ("plant") REFERENCES "plants" ("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -129,7 +118,7 @@ ALTER TABLE "air_temp_readings"
 ALTER TABLE "battery_charge_readings"
     ADD FOREIGN KEY ("device") REFERENCES "devices" ("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE "light_lux_readings"
+ALTER TABLE "light_level_readings"
     ADD FOREIGN KEY ("device") REFERENCES "devices" ("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "soil_moisture_readings"

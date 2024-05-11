@@ -47,7 +47,8 @@ create or replace function gen_test_devices(device_count integer, user_count int
                                 (gen_random_mac()),
                                 null,
                                 user_id,
-                                (select now_utc()),
+                                default,
+                                default,
                                 null);
                     end loop;
             end loop;
@@ -78,41 +79,36 @@ create or replace function gen_test_sensor_readings(reading_count integer) retur
                 for i in 1..reading_count
                     loop
                         insert into air_humidity_readings
-                        select gen_random_uuid()      uuid,
-                               gen_random_int(40, 60) value,
-                               cur_time               timestamp,
-                               device.uuid            device;
+                        values (gen_random_int(40, 60),
+                                cur_time,
+                                device.uuid);
 
                         insert into air_temp_readings
-                        select gen_random_uuid()      uuid,
-                               gen_random_int(20, 25) value,
-                               cur_time               timestamp,
-                               device.uuid            device;
+                        values (gen_random_int(20, 25),
+                                cur_time,
+                                device.uuid);
 
                         insert into battery_charge_readings
-                        select gen_random_uuid()       uuid,
-                               gen_random_int(20, 100) value,
-                               cur_time                timestamp,
-                               device.uuid             device;
+                        values (gen_random_int(20, 100),
+                                cur_time,
+                                device.uuid);
 
-                        insert into light_lux_readings
-                        select gen_random_uuid()         uuid,
-                               gen_random_int(500, 6000) value,
-                               cur_time                  timestamp,
-                               device.uuid               device;
+                        insert into light_level_readings
+                        values (gen_random_int(500, 6000),
+                                cur_time,
+                                device.uuid);
 
                         insert
-                        into soil_moisture_readings
-                        select gen_random_uuid()       uuid,
-                               gen_random_int(70, 100) value,
-                               cur_time                timestamp,
-                               device.uuid             device;
+                            into soil_moisture_readings
+                        values (gen_random_int(70, 100),
+                                cur_time,
+                                device.uuid);
 
-                        insert into water_reserve_readings
-                        select gen_random_uuid() uuid,
-                               true              enough_water,
-                               cur_time          timestamp,
-                               device.uuid       device;
+                        insert
+                            into water_reserve_readings
+                        values (gen_random_int(10, 100),
+                                cur_time,
+                                device.uuid);
 
                         cur_time = cur_time - ''30 minutes''::interval;
                     end loop;
@@ -130,7 +126,6 @@ create or replace function gen_test_plants() returns void as
         air_humidity_min  int;
         air_humidity_max  int;
         soil_moisture_min int;
-        soil_moisture_max int;
         light_lux_min     int;
         light_lux_max     int;
     begin
@@ -152,8 +147,6 @@ create or replace function gen_test_plants() returns void as
 
                 select gen_random_int(40, 100)
                 into soil_moisture_min;
-                select gen_random_int(soil_moisture_min, 100)
-                into soil_moisture_max;
 
                 select gen_random_int(400, 10000)
                 into light_lux_min;
@@ -169,10 +162,10 @@ create or replace function gen_test_plants() returns void as
                         air_humidity_min,
                         air_humidity_max,
                         soil_moisture_min,
-                        soil_moisture_max,
                         light_lux_min,
                         light_lux_max,
-                        (select now_utc()),
+                        default,
+                        default,
                         null);
 
                 insert into users_plants

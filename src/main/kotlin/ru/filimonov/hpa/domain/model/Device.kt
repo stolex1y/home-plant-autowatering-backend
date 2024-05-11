@@ -2,7 +2,7 @@ package ru.filimonov.hpa.domain.model
 
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.PastOrPresent
-import ru.filimonov.hpa.core.constraints.MacAddress
+import ru.filimonov.hpa.common.constraints.MacAddress
 import java.util.*
 
 data class Device(

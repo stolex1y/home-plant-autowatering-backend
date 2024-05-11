@@ -3,8 +3,8 @@ package ru.filimonov.hpa.data.model.readings
 import jakarta.persistence.Entity
 import jakarta.persistence.IdClass
 import jakarta.persistence.Table
-import ru.filimonov.hpa.core.toCalendar
-import ru.filimonov.hpa.core.toTimestamp
+import ru.filimonov.hpa.common.toCalendar
+import ru.filimonov.hpa.common.toTimestamp
 import ru.filimonov.hpa.domain.model.readings.AirHumidityReading
 import java.sql.Timestamp
 import java.util.*
