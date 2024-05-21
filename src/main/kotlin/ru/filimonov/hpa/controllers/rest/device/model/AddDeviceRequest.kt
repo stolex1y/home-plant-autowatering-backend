@@ -4,6 +4,7 @@ import ru.filimonov.hpa.domain.model.Device
 import java.util.*
 
 data class AddDeviceRequest(
+    val id: UUID,
     val mac: String,
     val plantId: UUID? = null,
     val name: String,
@@ -16,6 +17,6 @@ data class AddDeviceRequest(
         photoId = null,
         createdDate = Calendar.getInstance(),
         updatedDate = Calendar.getInstance(),
-        uuid = UUID.randomUUID(),
+        uuid = id,
     )
 }

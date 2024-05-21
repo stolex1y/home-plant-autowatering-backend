@@ -54,4 +54,13 @@ data class Plant(
             minName = "lightLuxMin"
         )
     }
+
+    val airHumidityRange: ClosedFloatingPointRange<Float>
+        get() = (airHumidityMin ?: Float.MIN_VALUE)..(airHumidityMax ?: Float.MAX_VALUE)
+
+    val airTempRange: ClosedFloatingPointRange<Float>
+        get() = (airTempMin ?: Float.MIN_VALUE)..(airTempMax ?: Float.MAX_VALUE)
+
+    val lightLevelRange: IntRange
+        get() = (lightLevelMin ?: Int.MIN_VALUE)..(lightLevelMax ?: Int.MAX_VALUE)
 }

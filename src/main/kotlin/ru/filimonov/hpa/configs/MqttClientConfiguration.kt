@@ -97,7 +97,7 @@ class MqttClientConfiguration {
     }
 
     @Bean
-    fun mqttMessageProducer(clientFactory: MqttPahoClientFactory): MqttPahoMessageDrivenChannelAdapter =
+    fun mqttMessageConsumer(clientFactory: MqttPahoClientFactory): MqttPahoMessageDrivenChannelAdapter =
         MqttPahoMessageDrivenChannelAdapter(UUID.randomUUID().toString(), clientFactory).apply {
             setQos(2)
             addTopic(ANY_DEVICE_ANY_SENSOR_TOPIC)
@@ -105,7 +105,7 @@ class MqttClientConfiguration {
         }
 
     @Bean
-    fun mqttMessageConsumer(clientFactory: MqttPahoClientFactory): MqttPahoMessageHandler {
+    fun mqttMessageProducer(clientFactory: MqttPahoClientFactory): MqttPahoMessageHandler {
         return MqttPahoMessageHandler(UUID.randomUUID().toString(), clientFactory).apply {
             setDefaultQos(2)
             setDefaultRetained(true)

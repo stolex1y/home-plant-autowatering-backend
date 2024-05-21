@@ -87,6 +87,10 @@ class DeviceServiceImpl(
                 configuration = plant.toConfiguration()
             )
         }
-        return repository.save(device.toEntity()).toDomain()
+        val saved = repository.save(device.toEntity()).toDomain()
+        if (saved.uuid != device.uuid) {
+            repository.updateUuidByUuid(saved.uuid, device.uuid)
+        }
+        return repository.findById(device.uuid).get().toDomain()
     }
 }
