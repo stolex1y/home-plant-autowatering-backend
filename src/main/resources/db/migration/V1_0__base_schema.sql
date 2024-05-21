@@ -89,6 +89,13 @@ CREATE TABLE "water_reserve_readings"
     PRIMARY KEY ("device", "timestamp")
 );
 
+CREATE TABLE "user_notification_details"
+(
+    "token"             text PRIMARY KEY,
+    "user_id"           text NOT NULL,
+    "notification_time" time NOT NULL
+);
+
 CREATE UNIQUE INDEX ON "plants" ("photo");
 
 CREATE INDEX ON "devices" ("plant");
